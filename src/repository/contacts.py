@@ -1,7 +1,8 @@
 from typing import List
+from datetime import date, timedelta
 
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 from src.database.models import Contact
 from src.schemas import ContactModel
@@ -40,5 +41,11 @@ async def update_contact(contact_id: int, body: ContactModel, db: Session):
     return contact
 
 
-async def find_contact_by_info(first_name: str, db: Session):
-    return db.query(Contact).filter(Contact.first_name.like(f'{first_name}%'))
+async def find_contact_by_info(find_info, db: Session):
+    return db.query(Contact).filter(
+        or_(Contact.first_name == find_info, Contact.last_name == find_info, Contact.email == find_info)).all()
+
+
+async def birthday(db: Session):
+    last_birthday_point = date.today() + timedelta(days=7)
+    return db.query(Contact).filter(and_(Contact.birthday.between(date.today(), last_birthday_point))).all()

@@ -11,7 +11,7 @@ config.read(file_config)
 db_url = config.get('DB', 'URL_STRING')
 
 engine = create_engine(db_url, echo=True, pool_size=5)
-session = sessionmaker(bind=engine, autoflush=False)
+session = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 def get_db():
     db = session()

@@ -7,7 +7,7 @@ from src.database.db import get_db
 from src.schemas import ContactModel, ContactResponse
 from src.repository import contacts as repository_contacts
 
-router = APIRouter(prefix='/contacts')
+router = APIRouter(prefix='/contacts', tags=['contacts'])
 
 
 @router.get('/', response_model=List[ContactResponse])
@@ -45,9 +45,17 @@ async def update_contact(body: ContactModel, contact_id: int, db: Session = Depe
     return contact
 
 
-@router.get('/{first_name}', response_model=ContactResponse)
-async def find_info_contact(first_name: str, db: Session = Depends(get_db)):
-    contact = await repository_contacts.find_contact_by_info(first_name, db)
+@router.get('/filter/{contact_info}', response_model=List[ContactResponse])
+async def find_info_contact(contact_info: str, db: Session = Depends(get_db)):
+    contact = await repository_contacts.find_contact_by_info(contact_info, db)
+    if not contact:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Contact not found')
+    return contact
+
+
+@router.get('/birthday/{contact_birthday}', response_model=List[ContactResponse])
+async def find_sevendays_birthday(db: Session = Depends(get_db)):
+    contact = await repository_contacts.birthday(db)
     if not contact:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Contact not found')
     return contact

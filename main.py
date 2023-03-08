@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from src.routes import contacts
+from src.routes import contacts, auth
 
 app = FastAPI()
 
 app.include_router(contacts.router)
+app.include_router(auth.router)
 
 
 @app.get('/')

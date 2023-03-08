@@ -24,5 +24,5 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     password = Column(String(200), nullable=False)
     created_at = Column('crated_at', DateTime, default=func.now())
-    avatar = Column(String(30), nullable=True)
+    avatar = Column(String(200), nullable=True)
     refresh_token = Column(String(255), nullable=True)
